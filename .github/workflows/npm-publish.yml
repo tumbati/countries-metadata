@@ -1,33 +1,99 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
-name: NPM Package
+name: Publish to NPM
 
 on:
-  release:
-    types: [created]
+    workflow_dispatch:
+        inputs:
+            version_type:
+                description: "Version bump type"
+                required: true
+                default: "patch"
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+                    - prerelease
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
+    publish:
+        runs-on: ubuntu-latest
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.HUB_TOKEN }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+                  registry-url: "https://registry.npmjs.org"
+                  cache: "npm"
+
+            - name: Configure Git
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run quality checks
+              run: npm run quality
+
+            - name: Run tests
+              run: npm test
+
+            - name: Build project
+              run: npm run build
+
+            - name: Bump version
+              id: version
+              run: |
+                  # Bump version based on input
+                  NEW_VERSION=$(npm version ${{ github.event.inputs.version_type }} --no-git-tag-version)
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                  echo "version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
+
+            - name: Update package files
+              run: |
+                  git add package.json package-lock.json
+
+            - name: Commit version bump
+              run: |
+                  git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+
+            - name: Create Git tag
+              run: |
+                  git tag ${{ steps.version.outputs.new_version }}
+
+            - name: Push changes and tags
+              run: |
+                  git push origin main
+                  git push origin ${{ steps.version.outputs.new_version }}
+
+            - name: Publish to NPM
+              run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Create GitHub Release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}
+              with:
+                  tag_name: ${{ steps.version.outputs.new_version }}
+                  release_name: Release ${{ steps.version.outputs.new_version }}
+                  body: |
+                      ## Changes in ${{ steps.version.outputs.new_version }}
+
+                      This release was automatically created from the npm publish workflow.
+
+                      ### Package Information
+                      - Package: @tumbati/bukajs
+                      - Version: ${{ steps.version.outputs.version_number }}
+                      - NPM: https://www.npmjs.com/package/@tumbati/bukajs/v/${{ steps.version.outputs.version_number }}
+                  draft: false
+                  prerelease: ${{ github.event.inputs.version_type == 'prerelease' }}
