@@ -83,8 +83,8 @@ jobs:
             This release was automatically created from the npm publish workflow.
 
             ### Package Information
-            - Package: @tumbati/bukajs
+            - Package: @tumbati/countries-metadata
             - Version: ${{ steps.version.outputs.version_number }}
-            - NPM: https://www.npmjs.com/package/@tumbati/bukajs/v/${{ steps.version.outputs.version_number }}
+            - NPM: https://www.npmjs.com/package/@tumbati/countries-metadata/v/${{ steps.version.outputs.version_number }}
           draft: false
           prerelease: ${{ github.event.inputs.version_type == 'prerelease' }}
