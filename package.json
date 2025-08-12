@@ -1,6 +1,6 @@
 {
   "name": "@tumbati/countries-metadata",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "List of countries containing country code, currency, dial code, continent, capital, and flags.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
