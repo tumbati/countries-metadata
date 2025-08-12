@@ -1,5 +1,5 @@
 {
-  "name": "countries_metadata",
+  "name": "@tumbati/countries-metadata",
   "version": "0.0.2",
   "description": "List of countries containing country code, currency, dial code, continent, capital, and flags.",
   "main": "./dist/index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nejat-njonjo/countries_metadata.git"
+    "url": "git+https://github.com/tumbati/countries-metadata.git"
   },
   "keywords": [
     "Countries",
@@ -27,12 +27,12 @@
     "country",
     "name"
   ],
-  "author": "Nejat Mhango",
+  "author": "Tumbati",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nejat-njonjo/countries_metadata/issues"
+    "url": "https://github.com/tumbati/countries-metadata/issues"
   },
-  "homepage": "https://github.com/nejat-njonjo/countries_metadata#readme",
+  "homepage": "https://github.com/tumbati/countries-metadata#readme",
   "devDependencies": {
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
