@@ -166,3 +166,4 @@ node_modules
 
 # Build files
 /dist
+CLAUDE.md

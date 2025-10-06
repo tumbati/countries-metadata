@@ -17,67 +17,84 @@ The purpose of this repository is to provide a detailed list of country metadata
 This data is stored in `countries_metadata.json` and can be utilized in various applications that require country-related information.
 
 ## Installation
-npm
+
+npm:
 ```sh
-npm install countries-metadata
+npm install @tumbati/countries-metadata
 ```
-pnpm
+
+pnpm:
 ```sh
-pnpm add countries-metadata
+pnpm add @tumbati/countries-metadata
+```
+
+yarn:
+```sh
+yarn add @tumbati/countries-metadata
 ```
 
 ## Usage
 
-In your nodejs project:
+### Import the package
+
+```ts
+import { countries, type Country, findCountryByCode, getCountryByName, findCountriesByContinent } from "@tumbati/countries-metadata";
+```
+
+### Access all countries
 
 An array containing metadata about various countries.
 
 ```ts
-import * as metadata from 'countries-metadata'
+import { countries, type Country } from "@tumbati/countries-metadata";
 
-console.log(metadata.countries)
+console.log(countries); // Array of all countries
 ```
 
-Find a country by its code.
+### Find a country by its code
 
 ```ts
-findCountryByCode(code: string): Country | undefined
+import { findCountryByCode } from "@tumbati/countries-metadata";
+
+const country = findCountryByCode('MW');
+console.log(country); // { code: 'MW', name: 'Malawi', ... }
 ```
+
+### Get a country by its name
 
 ```ts
-import * as metadata from 'countries-metadata'
+import { getCountryByName } from "@tumbati/countries-metadata";
 
-const country = metadata.findCountryByCode('MW')
+const country = getCountryByName('Malawi');
+console.log(country); // { code: 'MW', name: 'Malawi', ... }
 ```
 
-Get a country by its name.
+### Find countries in a specific continent
 
 ```ts
-getCountryByName(name: string): Country | undefined
+import { findCountriesByContinent } from "@tumbati/countries-metadata";
+
+const africanCountries = findCountriesByContinent('Africa');
+console.log(africanCountries); // Array of all African countries
 ```
+
+### TypeScript Support
+
+The package includes full TypeScript support with type definitions:
 
 ```ts
-import * as metadata from 'countries-metadata'
+import { type Country } from "@tumbati/countries-metadata";
 
-const country = metadata.findCountryByCode('Malawi')
+const myCountry: Country = {
+    code: 'US',
+    flag: '🇺🇸',
+    name: 'United States',
+    dial_code: '+1',
+    currency_code: 'USD',
+    continent: 'North America',
+    capital: 'Washington, D.C.'
+};
 ```
-
-Find countries in a specific continent.
-
-```ts
-findCountriesByContinent(continent: string): Country[]
-```
-
-```ts
-import * as metadata from 'countries-metadata'
-
-const country = metadata.findCountriesByContinent('Africa')
-```
-
-To use the country metadata in your other projects:
-
-1. Copy or download the `countries_metadata.json` file from this repository.
-2. Incorporate the data into your application or project as needed.
 
 ## Data Sources
 

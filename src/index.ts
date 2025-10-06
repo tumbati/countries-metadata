@@ -10,7 +10,7 @@ export interface Country {
     capital: string;
 }
 
-export const countries: Country[] =  metadata
+export const countries: Country[] = metadata;
 
 export function findCountryByCode(code: string): Country | undefined {
     return countries.find(country => country.code === code);
