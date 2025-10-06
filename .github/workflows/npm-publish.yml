@@ -65,6 +65,9 @@ jobs:
           git push origin main
           git push origin ${{ steps.version.outputs.new_version }}
 
+      - name: Build package
+        run: npm run build
+
       - name: Publish to NPM
         run: npm publish
         env:
